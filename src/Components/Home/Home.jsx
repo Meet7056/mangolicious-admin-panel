@@ -1,13 +1,35 @@
-import React from 'react';
-import Chart from '../Chart/Chart';
+import React, { useEffect, useState } from 'react';
+import { getAdminDashboard } from '../../allApis';
 import ItemLists from '../ItemLists/ItemLists';
 import Navbar from '../Navbar/Navbar';
-import ProgressBar from '../ProgressBar/ProgressBar';
 import Sidebar from '../Sidebar/Sidebar';
-import TableList from '../TableList/TableList';
 import './Home.scss';
 
 function Home() {
+    const [data, setdata] = useState({})
+    const [loading, setloading] = useState(false);
+
+    console.log({data})
+
+    const getData = async () => {
+        try {
+
+            setloading(true);
+            const response = await getAdminDashboard();
+            setloading(false);
+
+            setdata(response.dashboard)
+
+        } catch (error) {
+            setloading(false);
+            console.error("API error:", error.response?.data?.message || error.message);
+        }
+    };
+
+    useEffect(() => {
+        getData();
+    }, [])
+
     //
     return (
         <div className="home">
@@ -21,21 +43,21 @@ function Home() {
                 <div className="bg_color" />
 
                 <div className="home_items">
-                    <ItemLists type="user" />
-                    <ItemLists type="orders" />
-                    <ItemLists type="products" />
-                    <ItemLists type="balance" />
+                    <ItemLists type="user" value={data?.total_users || "-"} />
+                    <ItemLists type="orders" value={data?.orders_count || "-"} />
+                    <ItemLists type="mango" value={data?.top_mango || "-"} />
+                    <ItemLists type="revenue" value={data?.revenue || "-"} />
                 </div>
-
+                {/* 
                 <div className="chart_sec">
                     <ProgressBar />
                     <Chart height={450} title="Revenue" />
-                </div>
+                </div> */}
 
-                <div className="table">
+                {/* <div className="table">
                     <div className="title">Latest Transactions</div>
                     <TableList />
-                </div>
+                </div> */}
             </div>
         </div>
     );

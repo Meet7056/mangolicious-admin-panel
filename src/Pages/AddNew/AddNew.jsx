@@ -1,62 +1,112 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/jsx-props-no-spreading */
-import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from "react-router-dom";
+import { addAdmin, getSingleAdmin, updateAdmin } from '../../allApis';
+import successToast from '../../Components/globalFunctions/successToast';
 import Input from '../../Components/Input/Input';
 import Navbar from '../../Components/Navbar/Navbar';
 import Sidebar from '../../Components/Sidebar/Sidebar';
-import noImage from '../../Images/photo-camera.png';
 import './New.scss';
 
-function AddNew({ inputs, titlee, type }) {
-    let dynamicInpVal;
 
-    // dynamically change the state values
-    switch (type) {
-        case 'USER':
-            dynamicInpVal = {
-                username: '',
-                name: '',
-                email: '',
-                password: '',
-                address: '',
-            };
-            break;
-        case 'PRODUCT':
-            dynamicInpVal = {
-                title: '',
-                description: '',
-                category: '',
-                price: '',
-                stock: '',
-            };
-            break;
-        case 'BLOG':
-            dynamicInpVal = {
-                title: '',
-                description: '',
-                tags: '',
-            };
-            break;
-        default:
-            break;
-    }
-    const [userInp, setUserInp] = useState(dynamicInpVal);
+import { useNavigate } from "react-router-dom";
+import errorToast from '../../Components/globalFunctions/errorToast';
 
+import { useParams } from "react-router-dom";
+
+function AddNew({ titlee }) {
+    const { id } = useParams();
+    const [loading, setLoading] = useState(false);
+
+    const location = useLocation();
+    const { adminData } = location.state || {};
+
+    const getData = async () => {
+        try {
+            setLoading(true)
+            const response = await getSingleAdmin({ admin_id: id });
+            console.log({ response })
+            setLoading(false)
+
+        } catch (error) {
+            setLoading(false)
+            console.error("API error:", error.response?.data?.message || error.message);
+        }
+    };
+
+    useEffect(() => {
+        // getData();
+    }, [])
+
+    const dynamicInpVal = {
+        username: '',
+        password: '',
+        email: '',
+        superadmin: 0,
+    };
+
+    const inputs = [
+        {
+            id: 1,
+            label: 'Username',
+            type: 'text',
+            name: 'username',
+            placeholder: 'Enter username',
+        },
+        {
+            id: 2,
+            label: 'Password',
+            type: 'password',
+            name: 'password',
+            placeholder: 'Enter password',
+        },
+        {
+            id: 3,
+            label: 'Email',
+            type: 'email',
+            name: 'email',
+            placeholder: 'Enter email',
+        },
+    ];
+
+    const [userInp, setUserInp] = useState(!adminData ? dynamicInpVal : adminData);
     const [file, setFile] = useState('');
-
     const image = false;
-
-    // Dynamicaly change the data for different pages
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setUserInp({ ...userInp, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(userInp);
+        try {
+            setLoading(true)
+            
+            let response;
+            if (id) {
+                response = await updateAdmin({ ...userInp, admin_id: id });
+            }
+            else {
+                response = await addAdmin(userInp);
+            }
+            setLoading(false)
+            if (response.message == "Admin Created Successfully!" || response.message == "Admin Updated Successfully") {
+                successToast(response.message);
+                navigate(-1)
+            } else {
+                errorToast(response.message)
+            }
+
+
+
+        } catch (error) {
+            setLoading(false)
+            console.error("API error:", error.response?.data?.message || error.message);
+        }
     };
+
     return (
         <div className="add_new">
             <div className="home_sidebar">
@@ -67,41 +117,26 @@ function AddNew({ inputs, titlee, type }) {
                 <Navbar />
 
                 <div className="new_page_main">
-                    <div className="new_page_content">
-                        <div className="image">
-                            <p className="add_new_user">{titlee}</p>
-                            <img src={file ? URL.createObjectURL(file) : noImage} alt="" />
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="form">
-                            <div className="form_inp">
-                                <label htmlFor="file">
-                                    Upload: <DriveFolderUploadIcon className="file_icon" />
-                                </label>
-
-                                <input
-                                    type="file"
-                                    name="file"
-                                    id="file"
-                                    style={{ display: 'none' }}
-                                    onChange={(e) => setFile(e.target.files[0])}
-                                />
-                            </div>
+                    <form onSubmit={handleSubmit} className="new_page_content">
+                        <div className="form">
 
                             {inputs.map((detail) => (
-                                <Input
-                                    key={detail.id}
-                                    {...detail}
-                                    value={userInp[detail.name]}
-                                    onChange={handleChange}
-                                />
+                                <div>
+                                    <p style={{ color: "gray", fontSize: 12, marginBottom: 5 }}>{detail.label}</p>
+                                    <Input
+                                        key={detail.id}
+                                        {...detail}
+                                        value={userInp[detail.name]}
+                                        onChange={handleChange}
+                                    />
+                                </div>
                             ))}
 
-                            <button type="submit" className="submit_btn">
-                                Submit
-                            </button>
-                        </form>
-                    </div>
+                        </div>
+                        <button type="submit" disabled={loading} className={"submit_btn " + (loading && "disabled_btn")}>
+                            Submit
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

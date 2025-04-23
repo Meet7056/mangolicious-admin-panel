@@ -1,5 +1,4 @@
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStoreOutlined';
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
@@ -7,7 +6,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './itemlists.scss';
 
-function ItemLists({ type }) {
+function ItemLists({ type, value }) {
     let data;
 
     // Dynamicaly change the ui content
@@ -16,7 +15,7 @@ function ItemLists({ type }) {
             data = {
                 title: 'USERS',
                 isMoney: false,
-                count: 232,
+                count: value,
                 icon: (
                     <PermIdentityIcon
                         style={{
@@ -34,7 +33,7 @@ function ItemLists({ type }) {
             data = {
                 title: 'ORDERS',
                 isMoney: false,
-                count: 34,
+                count: value,
 
                 icon: (
                     <LocalGroceryStoreOutlinedIcon
@@ -49,11 +48,11 @@ function ItemLists({ type }) {
                 linkto: '/orders',
             };
             break;
-        case 'products':
+        case 'mango':
             data = {
-                title: 'PRODUCTS',
-                isMoney: true,
-                count: 107,
+                title: 'TOP PRODUCT',
+                isMoney: false,
+                count: value,
                 icon: (
                     <AttachMoneyOutlinedIcon
                         style={{
@@ -67,10 +66,10 @@ function ItemLists({ type }) {
                 linkto: '/products',
             };
             break;
-        case 'balance':
+        case 'revenue':
             data = {
-                title: 'BALANCE',
-                count: 444,
+                title: 'REVENUE',
+                count: value,
                 isMoney: true,
                 icon: (
                     <PaidOutlinedIcon
@@ -93,14 +92,10 @@ function ItemLists({ type }) {
         <div className="item_listss">
             <div className="name">
                 <p>{data.title}</p>
-                <span className="persentage positive">
-                    <KeyboardArrowUpIcon />
-                    20 %
-                </span>
             </div>
 
             <div className="counts">
-                {data.isMoney && <AttachMoneyOutlinedIcon />}
+                {data.isMoney && "₹"}
                 {data.count}
             </div>
 

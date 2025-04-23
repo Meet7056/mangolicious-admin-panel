@@ -1,7 +1,8 @@
 /* eslint-disable no-constant-condition */
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { deleteAdmin, getAdminList } from '../../allApis';
 import DataTable from '../../Components/DataTable/DataTable';
 import Navbar from '../../Components/Navbar/Navbar';
 import Sidebar from '../../Components/Sidebar/Sidebar';
@@ -12,7 +13,6 @@ import man4 from '../../Images/man4.jpg';
 import woman1 from '../../Images/woman1.jpg';
 import woman2 from '../../Images/woman2.jpg';
 import './userlists.scss';
-
 
 const userData = [
     {
@@ -113,52 +113,52 @@ const userData = [
     },
 ];
 
-function Lists({ type }) {
+function AdminList({ type }) {
 
     const [searchText, setSearchText] = useState('');
-    const [data, setData] = useState(userData);
-    const [loading, setLoading] = useState(false);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const handleDlt = (id) => {
         setData(data.filter((item) => item.id !== id));
+        try {
+            deleteAdmin({
+                "admin_id": id
+            });
+
+        } catch (error) {
+            console.log({ error })
+        }
     };
 
     const columns = [
         {
             field: 'id',
             headerName: 'ID',
-            width: 310,
-            renderCell: (param) => (
-                <div className="userr">
-                    <img src={param.row.image} alt="User Image" className="userr_image" />
-                    {param.row.id}
-                </div>
-            ),
+            minWidth: 100,
+            flex: 0.5
         },
         {
             field: 'username',
             headerName: 'Username',
-            width: 180,
+            minWidth: 180,
+            flex: 1
         },
-        { field: 'email', headerName: 'Email', width: 280 },
         {
-            field: 'status',
-            headerName: 'Status',
-            width: 150,
-            renderCell: (param) => (
-                <div className={`status ${param.row.status}`}>{param.row.status}</div>
-            ),
+            field: 'email',
+            headerName: 'Email',
+            minWidth: 180,
+            flex: 1
         },
-        { field: 'age', headerName: 'Age', width: 120 },
         {
             field: 'action',
             headerName: 'Action',
             width: 170,
             renderCell: (params) => (
                 <div className="actionn">
-                    <Link to={params.row.id}>
+                    <Link to={"/admin/" + params.row.id} state={{ adminData: params.row }}  >
                         <button type="button" className="view_btn">
-                            View
+                            Edit
                         </button>
                     </Link>
                     <button
@@ -172,6 +172,28 @@ function Lists({ type }) {
             ),
         },
     ];
+
+    const getData = async () => {
+        try {
+            setLoading(true)
+            const response = await getAdminList();
+            if (response.admins) {
+                setData(response.admins)
+            } else {
+                setData([])
+            }
+            setLoading(false)
+
+        } catch (error) {
+            console.log({ error })
+            setLoading(false)
+
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, [])
 
     const filteredData = searchText
         ? data.filter((row) =>
@@ -195,11 +217,12 @@ function Lists({ type }) {
 
                 {/* mui data table */}
                 <div className="data_table">
-                    <div className="btnn">
+                    <div className="btnn" style={{ display: 'flex', justifyContent: "end" }}>
                         <Link
                             style={{ textDecoration: 'none' }}
+                            to="/admin/addnew"
                         >
-                            <button type="button">Add New User</button>
+                            <button type="button">Add New Admin</button>
                         </Link>
                     </div>
 
@@ -210,4 +233,4 @@ function Lists({ type }) {
     );
 }
 
-export default Lists;
+export default AdminList;

@@ -1,15 +1,23 @@
+// import "bootstrap/dist/css/bootstrap.min.css";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useContext } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Toaster } from "react-hot-toast";
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import './app.scss';
 import { ColorContext } from './ColorContext/darkContext';
 import Home from './Components/Home/Home';
 import Orders from './Components/Orders/Orders';
+import AddFlashsale from './Pages/AddNew/AddFlashsale';
 import AddNew from './Pages/AddNew/AddNew';
-import BlogDetail from './Pages/BlogDetail/BlogDetail';
-import Blogs from './Pages/Blogs/Blogs';
+import AddNewProducts from './Pages/AddNew/AddNewProducts';
+import AdminList from './Pages/Admin/AdminList';
+import FlashsaleList from './Pages/Admin/FlashsaleList';
 import Detail from './Pages/Detail/Detail';
 import Login from './Pages/Login/Login';
+import NotFoundPage from './Pages/NotFoundpage';
+import ProductList from './Pages/UserLists/ProductList';
 import Lists from './Pages/UserLists/UserLists';
-import './app.scss';
+
 
 // Dynamicaly change the data for different pages(replaceable)
 const userInpDetails = [
@@ -140,65 +148,97 @@ const blogInputs = [
     },
 ];
 
+const ProtectedRoute = () => {
+    const token = localStorage.getItem('token');
+
+    return token ? <Outlet /> : <Navigate to="/login" replace />;
+};
+
 function App() {
     // color state management using react context
     const { darkMode } = useContext(ColorContext);
 
+    const theme = createTheme({
+        palette: {
+            mode: darkMode ? 'dark' : 'light',
+        },
+    });
+
     return (
-        <div className={darkMode ? 'App dark' : 'App'}>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/">
-                        <Route index element={<Home />} />
+        <ThemeProvider theme={theme}>
+            <div className={darkMode ? 'App dark' : 'App'}>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="*" element={<NotFoundPage />} />
+
                         <Route path="login" element={<Login />} />
-                        {/* nested routes */}
-                        <Route path="users">
-                            <Route index element={<Lists type="user" />} />
-                            <Route path=":userId" element={<Detail />} />
-                            <Route
-                                path="addnew"
-                                element={
-                                    <AddNew
-                                        inputs={userInpDetails}
-                                        titlee="Add New User"
-                                        type="USER"
-                                    />
-                                }
-                            />
+                        <Route path="/" element={<ProtectedRoute />}>
+                            <Route index element={<Home />} />
+                            <Route path="orders" element={<Orders />} />
+                            <Route path="sale">
+                                <Route index element={<FlashsaleList />} />
+                                <Route path=":id" element={<AddFlashsale />} />
+                                <Route
+                                    path="addnew"
+                                    element={
+                                        <AddFlashsale
+                                            inputs={productInpDetails}
+                                            titlee="Add New Product"
+                                            type="PRODUCT"
+                                        />
+                                    }
+                                />
+                            </Route>
+                            <Route path="products">
+                                <Route index element={<ProductList />} />
+                                <Route path=":id" element={<AddNewProducts />} />
+                                <Route
+                                    path="addnew"
+                                    element={
+                                        <AddNewProducts
+                                            inputs={productInpDetails}
+                                            titlee="Add New Product"
+                                            type="PRODUCT"
+                                        />
+                                    }
+                                />
+                            </Route>
+                            <Route path="admin">
+                                <Route index element={<AdminList />} />
+                                <Route path=":id" element={<AddNew />} />
+                                <Route
+                                    path="addnew"
+                                    element={
+                                        <AddNew
+                                            inputs={userInpDetails}
+                                            titlee="Add New User"
+                                            type="USER"
+                                        />
+                                    }
+                                />
+                            </Route>
+                            <Route path="users">
+                                <Route index element={<Lists />} />
+                                <Route path=":userId" element={<Detail />} />
+                                <Route
+                                    path="addnew"
+                                    element={
+                                        <AddNew
+                                            inputs={userInpDetails}
+                                            titlee="Add New User"
+                                            type="USER"
+                                        />
+                                    }
+                                />
+                            </Route>
                         </Route>
+                    </Routes>
+                </BrowserRouter>
 
-                        <Route path="orders" element={<Orders />} />
 
-                        {/* nested routes */}
-                        <Route path="products">
-                            <Route index element={<Lists type="product" />} />
-                            <Route path=":productId" element={<Detail />} />
-                            <Route
-                                path="addnew"
-                                element={
-                                    <AddNew
-                                        inputs={productInpDetails}
-                                        titlee="Add New Product"
-                                        type="PRODUCT"
-                                    />
-                                }
-                            />
-                        </Route>
-
-                        <Route path="blogs">
-                            <Route index element={<Blogs type="blog" />} />
-                            <Route path=":blogId" element={<BlogDetail />} />
-                            <Route
-                                path="addnew"
-                                element={
-                                    <AddNew inputs={blogInputs} titlee="Add New Blog" type="BLOG" />
-                                }
-                            />
-                        </Route>
-                    </Route>
-                </Routes>
-            </BrowserRouter>
-        </div>
+                <Toaster />
+            </div>
+        </ThemeProvider>
     );
 }
 

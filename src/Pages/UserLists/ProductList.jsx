@@ -1,7 +1,8 @@
 /* eslint-disable no-constant-condition */
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { deleteMangoes, getMangoes } from '../../allApis';
 import DataTable from '../../Components/DataTable/DataTable';
 import Navbar from '../../Components/Navbar/Navbar';
 import Sidebar from '../../Components/Sidebar/Sidebar';
@@ -13,7 +14,7 @@ import woman1 from '../../Images/woman1.jpg';
 import woman2 from '../../Images/woman2.jpg';
 import './userlists.scss';
 
-
+// Replace this data with your own
 const userData = [
     {
         id: '630343eb94c2812e4cd7e45d',
@@ -113,52 +114,69 @@ const userData = [
     },
 ];
 
-function Lists({ type }) {
 
+function ProductList({ type }) {
+    //
+
+    const [data, setData] = useState([]);
     const [searchText, setSearchText] = useState('');
-    const [data, setData] = useState(userData);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const handleDlt = (id) => {
         setData(data.filter((item) => item.id !== id));
+
+        try {
+            deleteMangoes({
+                "sale_id": id
+            });
+
+        } catch (error) {
+            console.log({ error });
+        }
     };
 
     const columns = [
         {
             field: 'id',
             headerName: 'ID',
-            width: 310,
-            renderCell: (param) => (
-                <div className="userr">
-                    <img src={param.row.image} alt="User Image" className="userr_image" />
-                    {param.row.id}
-                </div>
-            ),
+            minWidth: 100,
+            flex: 0.5
         },
         {
-            field: 'username',
-            headerName: 'Username',
-            width: 180,
+            field: 'type',
+            minWidth: 180,
+            flex: 1
         },
-        { field: 'email', headerName: 'Email', width: 280 },
         {
-            field: 'status',
-            headerName: 'Status',
-            width: 150,
-            renderCell: (param) => (
-                <div className={`status ${param.row.status}`}>{param.row.status}</div>
-            ),
+            field: 'quantity',
+            headerName: 'Quantity',
+            minWidth: 180,
+            flex: 1
         },
-        { field: 'age', headerName: 'Age', width: 120 },
+        {
+            field: 'price',
+            minWidth: 180,
+            flex: 1
+        },
+        {
+            field: 'city',
+            minWidth: 180,
+            flex: 1
+        },
+        {
+            field: 'state',
+            minWidth: 180,
+            flex: 1
+        },
         {
             field: 'action',
             headerName: 'Action',
             width: 170,
             renderCell: (params) => (
                 <div className="actionn">
-                    <Link to={params.row.id}>
+                    <Link to={"/products/" + params.row.id} state={{ adminData: params.row }} >
                         <button type="button" className="view_btn">
-                            View
+                            Edit
                         </button>
                     </Link>
                     <button
@@ -173,6 +191,28 @@ function Lists({ type }) {
         },
     ];
 
+    const getData = async () => {
+        try {
+            setLoading(true)
+            const response = await getMangoes();
+            if (response.data.length > 0) {
+                setData(response.data)
+            } else {
+                setData([])
+            }
+            setLoading(false)
+
+        } catch (error) {
+            console.log({ error })
+            setLoading(false)
+
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, [])
+
     const filteredData = searchText
         ? data.filter((row) =>
             Object.values(row).some(
@@ -182,7 +222,6 @@ function Lists({ type }) {
             )
         )
         : data;
-
 
     return (
         <div className="list_page">
@@ -195,11 +234,12 @@ function Lists({ type }) {
 
                 {/* mui data table */}
                 <div className="data_table">
-                    <div className="btnn">
+                    <div className="btnn" style={{ display: 'flex', justifyContent: "end" }}>
                         <Link
+                            to="/products/addnew"
                             style={{ textDecoration: 'none' }}
                         >
-                            <button type="button">Add New User</button>
+                            <button type="button">Add New Product</button>
                         </Link>
                     </div>
 
@@ -210,4 +250,4 @@ function Lists({ type }) {
     );
 }
 
-export default Lists;
+export default ProductList;
