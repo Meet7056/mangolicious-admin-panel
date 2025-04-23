@@ -26,7 +26,7 @@ function ItemLists({ type, value }) {
                     />
                 ),
                 link: 'See all users',
-                linkto: '/users',
+                // linkto: '/users',
             };
             break;
         case 'orders':
@@ -81,7 +81,7 @@ function ItemLists({ type, value }) {
                     />
                 ),
                 link: 'See all details',
-                linkto: '/',
+                // linkto: '/',
             };
             break;
         default:
@@ -100,9 +100,12 @@ function ItemLists({ type, value }) {
             </div>
 
             <div className="see_item">
-                <Link to={data.linkto}>
-                    <p>{data.link}</p>
-                </Link>
+                {
+                    data.linkto?
+                    <Link to={data.linkto}>
+                        <p>{data.link}</p>
+                    </Link> : "-"
+                }
                 {data.icon}
             </div>
         </div>
