@@ -12,6 +12,7 @@ import AddNew from './Pages/AddNew/AddNew';
 import AddNewProducts from './Pages/AddNew/AddNewProducts';
 import AdminList from './Pages/Admin/AdminList';
 import FlashsaleList from './Pages/Admin/FlashsaleList';
+import UsersList from './Pages/Admin/UsersList';
 import Detail from './Pages/Detail/Detail';
 import Login from './Pages/Login/Login';
 import NotFoundPage from './Pages/NotFoundpage';
@@ -177,6 +178,20 @@ function App() {
                             <Route path="orders" element={<Orders />} />
                             <Route path="sale">
                                 <Route index element={<FlashsaleList />} />
+                                <Route path=":id" element={<AddFlashsale />} />
+                                <Route
+                                    path="addnew"
+                                    element={
+                                        <AddFlashsale
+                                            inputs={productInpDetails}
+                                            titlee="Add New Product"
+                                            type="PRODUCT"
+                                        />
+                                    }
+                                />
+                            </Route>
+                            <Route path="users">
+                                <Route index element={<UsersList />} />
                                 <Route path=":id" element={<AddFlashsale />} />
                                 <Route
                                     path="addnew"

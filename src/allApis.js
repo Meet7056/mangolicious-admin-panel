@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const API_URL = "https://mangoliciousfood.com/api";
 const tokennn = "b1084070-aaa1-4fd3-8a6e-b2852344c577"
@@ -10,16 +11,19 @@ export const handleLogin = async (payload) => {
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
-
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
 
-export const getAdminDashboard = async (payload) => {
+export const getAdminDashboard = async (frequency) => {
     try {
         const token = localStorage.getItem("token");
 
-        const response = await axios.get(`${API_URL}/admin_dashboard/?view=monthly`, {
+        const response = await axios.get(`${API_URL}/admin_dashboard/?view=${frequency}`, {
             headers: {
                 token,
             },
@@ -28,7 +32,10 @@ export const getAdminDashboard = async (payload) => {
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
-
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
@@ -48,7 +55,10 @@ export const addAdmin = async (payload) => {
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
-
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
@@ -66,7 +76,10 @@ export const updateAdmin = async (payload) => {
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
-
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
@@ -84,7 +97,10 @@ export const getAdminList = async () => {
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
-
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
@@ -103,7 +119,10 @@ export const getSingleAdmin = async ({ payload }) => {
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
-
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
@@ -121,7 +140,10 @@ export const deleteAdmin = async (payload) => {
 
         return response.data;
     } catch (error) {
-        console.error("API error:", error.response?.data?.message || error.message);
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        } console.error("API error:", error.response?.data?.message || error.message);
         return error;
     }
 };
@@ -140,7 +162,10 @@ export const addProducts = async (payload) => {
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
-
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
@@ -159,7 +184,10 @@ export const updateProducts = async (payload) => {
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
-
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
@@ -177,7 +205,10 @@ export const addFlashsale = async (payload) => {
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
-
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
@@ -195,7 +226,10 @@ export const updateFlashsale = async (payload) => {
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
-
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
@@ -214,6 +248,10 @@ export const getFlashList = async () => {
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
 
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
@@ -231,7 +269,10 @@ export const getMangoes = async () => {
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
-
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
         return error;
     }
 }
@@ -249,7 +290,10 @@ export const deleteMangoes = async (payload) => {
 
         return response.data;
     } catch (error) {
-        console.error("API error:", error.response?.data?.message || error.message);
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        } console.error("API error:", error.response?.data?.message || error.message);
         return error;
     }
 };
@@ -267,7 +311,10 @@ export const deleteFlashsale = async (payload) => {
 
         return response.data;
     } catch (error) {
-        console.error("API error:", error.response?.data?.message || error.message);
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        } console.error("API error:", error.response?.data?.message || error.message);
         return error;
     }
 };
@@ -304,7 +351,10 @@ export const updateOrderStaus = async (payload) => {
 
         return response.data
     } catch (error) {
-        console.error('Error approving order:', error);
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        } console.error('Error approving order:', error);
         return error
     }
 };

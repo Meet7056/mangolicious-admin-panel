@@ -15,6 +15,7 @@ export const sidebarMenu = [
   {
     title: 'Lists',
     items: [
+      { name: 'Users', icon: PersonIcon, path: '/users' },
       { name: 'Admins', icon: PersonIcon, path: '/admin' },
       { name: 'Flash sale', icon: DiscountIcon, path: '/sale' },
       { name: 'Products', icon: TableChartIcon, path: '/products' },

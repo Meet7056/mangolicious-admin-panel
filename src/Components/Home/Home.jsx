@@ -8,6 +8,7 @@ import './Home.scss';
 function Home() {
     const [data, setdata] = useState({})
     const [loading, setloading] = useState(false);
+    const [frequency, setFrequency] = useState("daily");
 
     console.log({data})
 
@@ -15,7 +16,7 @@ function Home() {
         try {
 
             setloading(true);
-            const response = await getAdminDashboard();
+            const response = await getAdminDashboard(frequency);
             setloading(false);
 
             setdata(response.dashboard)
@@ -28,7 +29,7 @@ function Home() {
 
     useEffect(() => {
         getData();
-    }, [])
+    }, [frequency])
 
     //
     return (
@@ -38,7 +39,7 @@ function Home() {
             </div>
 
             <div className="home_main">
-                <Navbar />
+                <Navbar frequency={frequency} setFrequency={setFrequency} />
 
                 <div className="bg_color" />
 

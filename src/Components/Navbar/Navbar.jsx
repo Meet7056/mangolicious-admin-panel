@@ -13,18 +13,19 @@ import './navbar.scss';
 // import images
 import admin from '../../Images/admin_pic.jpg';
 import { sidebarMenu } from '../../globalVars';
+import FrequencySelect from '../CustomSelect';
 
-function Navbar({ setSearchText }) {
+function Navbar({ setSearchText, frequency, setFrequency }) {
     const [toggle, setToggle] = useState(false);
     // color state management using react context
     const { darkMode, dispatch } = useContext(ColorContext);
 
-        const navigate = useNavigate();
-    
-        const handleLogout = () => {
-            navigate("/login");
-            localStorage.removeItem("token")
-        }
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        navigate("/login");
+        localStorage.removeItem("token")
+    }
 
     const handleToggle = () => {
         setToggle(!toggle);
@@ -51,6 +52,12 @@ function Navbar({ setSearchText }) {
                 </div>
 
                 <div className="item_lists">
+
+                    {
+                        frequency &&
+                        <FrequencySelect value={frequency} onChange={(e) => setFrequency(e.target.value)} />
+                    }
+
                     <div className="item">
                         {!darkMode ? (
                             <DarkModeIcon
