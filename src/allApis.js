@@ -29,6 +29,10 @@ export const getAdminDashboard = async (frequency) => {
             },
         });
 
+        if (response.data.message == "Authorization Failed") {
+            window.location.replace("/login")
+        }
+
         return response.data;
     } catch (error) {
         console.error("API error:", error.response?.data?.message || error.message);
@@ -239,6 +243,28 @@ export const getFlashList = async () => {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(`${API_URL}/view_flash_sale/`, {
+            headers: {
+                token,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("API error:", error.response?.data?.message || error.message);
+
+        if (error.status == 401) {
+            toast.error("Please login, token is not valid!")
+            window.location.replace("/login")
+        }
+        return error;
+    }
+}
+
+export const getAllUsers = async () => {
+    try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(`${API_URL}/get_all_users/`, {
             headers: {
                 token,
             },

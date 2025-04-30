@@ -2,9 +2,8 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { deleteFlashsale, getFlashList } from '../../allApis';
+import { deleteFlashsale, getAllUsers } from '../../allApis';
 import DataTable from '../../Components/DataTable/DataTable';
-import { formatDateTime } from '../../Components/globalFunctions/dateFormatter';
 import Navbar from '../../Components/Navbar/Navbar';
 import Sidebar from '../../Components/Sidebar/Sidebar';
 import man1 from '../../Images/man1.jpg';
@@ -141,60 +140,36 @@ function UsersList({ type }) {
             flex: 0.5
         },
         {
-            field: 'offer_title',
-            headerName: 'Title',
+            field: 'fullname',
+            headerName: 'Full name',
             minWidth: 180,
             flex: 1
         },
         {
-            field: 'offer_desc',
-            headerName: 'Description',
+            field: 'email',
+            headerName: 'Email',
             minWidth: 180,
             flex: 1
         },
         {
-            field: 'start_date',
+            field: 'mobile_no',
             headerName: 'Start',
             minWidth: 180,
-            flex: 1,
-            valueFormatter: (params) => formatDateTime(params.value)
+            flex: 1
         },
         {
-            field: 'end_date',
-            headerName: 'End',
+            field: 'password',
             minWidth: 180,
-            flex: 1,
-            valueFormatter: (params) => formatDateTime(params.value)
-        },
-        {
-            field: 'action',
-            headerName: 'Action',
-            width: 170,
-            renderCell: (params) => (
-                <div className="actionn">
-                    <Link to={"/sale/" + params.row.id} state={{ adminData: params.row }} >
-                        <button type="button" className="view_btn">
-                            Edit
-                        </button>
-                    </Link>
-                    <button
-                        type="button"
-                        className="delete_btn"
-                        onClick={() => handleDlt(params.row.id)}
-                    >
-                        Delete
-                    </button>
-                </div>
-            ),
+            flex: 1
         },
     ];
 
     const getData = async () => {
         try {
             setLoading(true)
-            const response = await getFlashList();
-            if (response.flash_sales) {
-                setData(response.flash_sales)
+            const response = await getAllUsers();
+            if (response) {
+                setData(response)
             } else {
                 setData([])
             }

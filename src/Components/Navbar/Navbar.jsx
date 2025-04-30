@@ -1,6 +1,4 @@
 import CloseIcon from '@mui/icons-material/Close';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import React, { useContext, useState } from 'react';
@@ -58,7 +56,7 @@ function Navbar({ setSearchText, frequency, setFrequency }) {
                         <FrequencySelect value={frequency} onChange={(e) => setFrequency(e.target.value)} />
                     }
 
-                    <div className="item">
+                    {/* <div className="item">
                         {!darkMode ? (
                             <DarkModeIcon
                                 className="item_icon"
@@ -70,7 +68,7 @@ function Navbar({ setSearchText, frequency, setFrequency }) {
                                 onClick={() => dispatch({ type: 'TOGGLE' })}
                             />
                         )}
-                    </div>
+                    </div> */}
 
                     <div className="item">
                         <img className="admin_pic" src={admin} alt="admin" />
