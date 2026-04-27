@@ -1,7 +1,7 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const API_URL = "https://mangoliciousfood.com/api";
+const API_URL = "https://mangoliciousfoods.com/api";
 const tokennn = "b1084070-aaa1-4fd3-8a6e-b2852344c577"
 
 export const handleLogin = async (payload) => {
